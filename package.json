@@ -1,0 +1,30 @@
+{
+  "name": "@scola/auth-server",
+  "version": "0.0.0",
+  "description": "Authorization (server)",
+  "repository": "github:scola84/node-auth-server",
+  "author": "M.C. van den Boogaart <scola@kvdb.name>",
+  "license": "MIT",
+  "main": "./dist/auth-server.js",
+  "jsnext:main": "index.js",
+  "dependencies": {
+    "@scola/auth-common": "^0.0.0",
+    "@scola/error": "^4.0.2",
+    "bcrypt": "^0.8.7",
+    "jsonwebtoken": "^7.1.9",
+    "useragent": "^2.1.9"
+  },
+  "devDependencies": {
+    "rollup": "^0.36.1",
+    "rollup-plugin-buble": "^0.14.0",
+    "uglify-js": "^2.7.3"
+  },
+  "scripts": {
+    "build": "npm run cleanup && npm run rollup",
+    "build:min": "npm run build && npm run min",
+    "cleanup": "rm -rf dist",
+    "min": "uglifyjs dist/auth-server.js -m -o dist/auth-server.min.js",
+    "prepublish": "npm run build:min",
+    "rollup": "rollup -c"
+  }
+}
