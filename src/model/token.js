@@ -35,7 +35,7 @@ export default function authModelToken(factory, database, config) {
           callback(new ScolaError('401 invalid_token User state invalid'));
         }
 
-        const header = request.connection().socket().upgradeReq.headers['user-agent'];
+        const header = request.header('user-agent');
         const agent = useragent.parse(header);
 
         if (agent.family !== user.agent ||

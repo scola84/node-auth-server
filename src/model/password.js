@@ -43,7 +43,7 @@ export default function authModelPassword(factory, database, config) {
 
   function insert(data, request, callback) {
     const address = request.connection().address();
-    const header = request.connection().socket().upgradeReq.headers['user-agent'];
+    const header = request.header('user-agent');
     const agent = useragent.parse(header);
     const user = request.connection().user();
     const duration = database.duration(user);

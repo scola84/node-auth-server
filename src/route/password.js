@@ -4,7 +4,7 @@ export default function authRoutePassword(router, factory) {
       .model('scola.auth.password')
       .object()
       .insert()
-      .execute(request, (error, result) => {
+      .request(request, (error, result) => {
         if (!error) {
           response
             .status(201)
