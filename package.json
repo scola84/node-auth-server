@@ -8,6 +8,7 @@
   "main": "./dist/auth-server.js",
   "jsnext:main": "index.js",
   "dependencies": {
+    "@scola/api-model": "0.0.0",
     "@scola/auth-common": "^0.0.0",
     "@scola/error": "^4.0.2",
     "bcrypt": "^0.8.7",

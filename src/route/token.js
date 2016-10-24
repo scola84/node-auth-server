@@ -1,34 +1,20 @@
-export default function authRouteToken(router, factory) {
-  router.filter((request, response, next) => {
-    const header = request.header('Authorization');
+import { tokenValidator } from '@scola/auth-common';
+import { extractData as extract } from '@scola/api-model';
+import tokenUser from '../helper/token-user';
 
-    if (!header) {
-      next();
-      return;
-    }
+export default function tokenRoute(router, factory, database, key) {
+  function validate(request, response, next) {
+    next(tokenValidator.validate(request.data()));
+  }
 
-    const [, token] = header.split(' ');
+  function authorize(request, response, next) {
+    tokenUser(database, key, request.data(), request, next);
+  }
 
-    factory
-      .model('scola.auth.token')
-      .object()
-      .insert()
-      .data({ token }, request, next);
-  });
-
-  router.post('/scola.auth.token', (request, response, next) => {
-    factory
-      .model('scola.auth.token')
-      .object()
-      .insert()
-      .request(request, (error, result) => {
-        if (!error) {
-          response
-            .status(201)
-            .end(result);
-        }
-
-        next(error);
+  router.post('/scola.auth.token', extract, validate, authorize,
+    (request, response) => {
+      response.status(201).end({
+        user: request.connection().user().toObject()
       });
-  });
+    });
 }

@@ -1,14 +1,14 @@
-import passwordModel from './src/model/password';
-import tokenModel from './src/model/token';
+import fs from 'fs';
+import tokenFilter from './src/filter/token';
 import passwordRoute from './src/route/password';
 import tokenRoute from './src/route/token';
 
 export { User } from '@scola/auth-common';
 
 export function authServer(router, factory, database, config) {
-  passwordModel(factory, database, config);
-  tokenModel(factory, database, config);
+  const key = fs.readFileSync(config.auth.key);
 
-  passwordRoute(router, factory);
-  tokenRoute(router, factory);
+  tokenFilter(router, database, key);
+  passwordRoute(router, factory, database, key);
+  tokenRoute(router, factory, database, key);
 }
