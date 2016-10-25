@@ -12,9 +12,14 @@ export default function tokenRoute(router, factory, database, key) {
   }
 
   router.post('/scola.auth.token', extract, validate, authorize,
-    (request, response) => {
-      response.status(201).end({
-        user: request.connection().user().toObject()
-      });
+    (request, response, next) => {
+      response
+        .once('error', next)
+        .status(201)
+        .end({
+          user: request.connection().user().toObject()
+        }, () => {
+          response.removeListener('error', next);
+        });
     });
 }

@@ -75,10 +75,15 @@ export default function passwordRoute(router, factory, database, key) {
             return;
           }
 
-          response.status(201).end({
-            token,
-            user: user.toObject()
-          });
+          response
+            .once('error', next)
+            .status(201)
+            .end({
+              token,
+              user: user.toObject()
+            }, () => {
+              response.removeListener('error', next);
+            });
         });
       });
     });
