@@ -8,17 +8,17 @@
   "main": "./dist/auth-server.js",
   "jsnext:main": "index.js",
   "dependencies": {
-    "@scola/api-model": "0.0.0",
-    "@scola/auth-common": "^0.0.0",
-    "@scola/error": "^4.0.2",
+    "@scola/api-model": "2.0.1",
+    "@scola/auth-common": "^1.0.0",
+    "@scola/error": "^4.1.0",
     "bcrypt": "^0.8.7",
     "jsonwebtoken": "^7.1.9",
     "useragent": "^2.1.9"
   },
   "devDependencies": {
-    "rollup": "^0.36.1",
+    "rollup": "^0.36.3",
     "rollup-plugin-buble": "^0.14.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.4"
   },
   "scripts": {
     "build": "npm run cleanup && npm run rollup",
