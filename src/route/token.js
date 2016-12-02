@@ -2,7 +2,7 @@ import { tokenValidator } from '@scola/auth-common';
 import { extractData as extract } from '@scola/api-model';
 import tokenUser from '../helper/token-user';
 
-export default function tokenRoute(router, factory, database, key) {
+export default function tokenRoute(router, database, key) {
   function validate(request, response, next) {
     next(tokenValidator.validate(request.data()));
   }

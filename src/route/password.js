@@ -5,7 +5,7 @@ import { ScolaError } from '@scola/error';
 import { extractData as extract } from '@scola/api-model';
 import { User, passwordValidator } from '@scola/auth-common';
 
-export default function passwordRoute(router, factory, database, key) {
+export default function passwordRoute(router, database, key) {
   function validate(request, response, next) {
     next(passwordValidator.validate(request.data()));
   }
@@ -79,6 +79,7 @@ export default function passwordRoute(router, factory, database, key) {
             .once('error', next)
             .status(201)
             .end({
+              persistent: request.data().persistent,
               token,
               user: user.toObject()
             }, () => {
