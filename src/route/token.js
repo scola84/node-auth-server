@@ -11,15 +11,22 @@ export default function tokenRoute(router, database, key) {
     tokenUser(database, key, request.data(), request, next);
   }
 
-  router.post('/scola.auth.token', extract, validate, authorize,
-    (request, response, next) => {
-      response
-        .once('error', next)
-        .status(201)
-        .end({
-          user: request.connection().user().toObject()
-        }, () => {
-          response.removeListener('error', next);
-        });
-    });
+  function route(request, response, next) {
+    response
+      .once('error', next)
+      .status(201)
+      .end({
+        user: request.connection().user().toObject()
+      }, () => {
+        response.removeListener('error', next);
+      });
+  }
+
+  router.post(
+    '/scola.auth.token',
+    extract,
+    validate,
+    authorize,
+    route
+  );
 }
