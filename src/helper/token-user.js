@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken';
 import useragent from 'useragent';
 import { User } from '@scola/auth-common';
-import { ScolaError } from '@scola/error';
+import { ScolaError } from '@scola/core';
 
 export default function tokenUser(database, key, data, request, callback) {
   verify(data.token, key, (tokenError, token) => {

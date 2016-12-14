@@ -1,5 +1,5 @@
 import { tokenValidator } from '@scola/auth-common';
-import { extractData as extract } from '@scola/api-model';
+import { extract } from '@scola/core';
 import tokenUser from '../helper/token-user';
 
 export default function tokenRoute(router, database, key) {

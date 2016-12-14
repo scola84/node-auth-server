@@ -1,8 +1,7 @@
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import useragent from 'useragent';
-import { ScolaError } from '@scola/error';
-import { extractData as extract } from '@scola/api-model';
+import { extract, ScolaError } from '@scola/core';
 import { User, passwordValidator } from '@scola/auth-common';
 
 export default function passwordRoute(router, database, key) {

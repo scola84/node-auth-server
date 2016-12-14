@@ -5,9 +5,8 @@ export default {
   entry: 'index.js',
   format: 'cjs',
   external: [
-    '@scola/api-model',
     '@scola/auth-common',
-    '@scola/error',
+    '@scola/core',
     'bcrypt',
     'fs',
     'jsonwebtoken',

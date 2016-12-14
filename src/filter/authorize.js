@@ -1,4 +1,4 @@
-import { ScolaError } from '@scola/error';
+import { ScolaError } from '@scola/core';
 
 export default function authorize(request, response, next) {
   const user = request.connection().user();
