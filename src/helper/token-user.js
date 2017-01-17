@@ -1,10 +1,9 @@
 import { verify } from 'jsonwebtoken';
 import useragent from 'useragent';
-import { User } from '@scola/auth-common';
-import { ScolaError } from '@scola/core';
+import { ScolaError } from '@scola/error';
 
-export default function tokenUser(database, key, data, request, callback) {
-  verify(data.token, key, (tokenError, token) => {
+export default function tokenUser(auth, data, request, callback) {
+  verify(data.token, auth.key(), (tokenError, token) => {
     if (tokenError) {
       callback(new ScolaError('401 invalid_token ' + tokenError.message));
       return;
@@ -12,7 +11,7 @@ export default function tokenUser(database, key, data, request, callback) {
 
     data.user_id = token.user_id;
 
-    database.selectToken(data, (databaseError, user) => {
+    auth.dao().selectToken(data, (databaseError, user) => {
       if (databaseError) {
         callback(ScolaError.fromError(databaseError, '500 invalid_query'));
         return;
@@ -38,7 +37,8 @@ export default function tokenUser(database, key, data, request, callback) {
         return;
       }
 
-      request.connection().user(new User()
+      request.connection().user(auth
+        .user()
         .id(user.user_id)
         .username(user.username)
         .roles(user.roles));

@@ -1,18 +1,19 @@
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import useragent from 'useragent';
-import { extract, ScolaError } from '@scola/core';
-import { User, passwordValidator } from '@scola/auth-common';
+import { passwordValidator } from '@scola/auth-common';
+import { ScolaError } from '@scola/error';
+import { filter as extract } from '@scola/extract';
 
-export default function passwordRoute(router, database, key) {
+export default function passwordRoute(router, auth) {
   function validate(request, response, next) {
-    next(passwordValidator.validate(request.data()));
+    passwordValidator.validate(request.data(), next);
   }
 
   function authorize(request, response, next) {
     const data = request.data();
 
-    database.selectUser(data, (databaseError, user) => {
+    auth.dao().selectUser(data, (databaseError, user) => {
       if (databaseError) {
         next(ScolaError.fromError(databaseError, '500 invalid_query'));
         return;
@@ -30,7 +31,8 @@ export default function passwordRoute(router, database, key) {
           return;
         }
 
-        request.connection().user(new User()
+        request.connection().user(auth
+          .user()
           .id(user.user_id)
           .username(user.username)
           .roles(user.roles));
@@ -45,11 +47,11 @@ export default function passwordRoute(router, database, key) {
     const header = request.header('user-agent');
     const agent = useragent.parse(header);
     const user = request.connection().user();
-    const duration = database.duration(user);
+    const duration = auth.dao().duration(user);
 
     sign({
       user_id: user.id()
-    }, key, {
+    }, auth.key(), {
       expiresIn: duration
     }, (tokenError, token) => {
       if (tokenError) {
@@ -67,7 +69,7 @@ export default function passwordRoute(router, database, key) {
         device: agent.device.family
       };
 
-      database.insertToken(tokenRow, (databaseError) => {
+      auth.dao().insertToken(tokenRow, (databaseError) => {
         if (databaseError) {
           next(new ScolaError('500 invalid_query ' + databaseError.message));
           return;

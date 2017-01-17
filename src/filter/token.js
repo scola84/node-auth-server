@@ -1,6 +1,6 @@
 import tokenUser from '../helper/token-user';
 
-export default function tokenFilter(router, database, key) {
+export default function tokenFilter(router, database, auth) {
   router.filter((request, response, next) => {
     const header = request.header('Authorization');
 
@@ -11,6 +11,6 @@ export default function tokenFilter(router, database, key) {
 
     const [, token] = header.split(' ');
 
-    tokenUser(database, key, { token }, request, next);
+    tokenUser(database, auth.key(), { token }, request, next);
   });
 }

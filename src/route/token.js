@@ -1,14 +1,14 @@
 import { tokenValidator } from '@scola/auth-common';
-import { extract } from '@scola/core';
+import { filter as extract } from '@scola/extract';
 import tokenUser from '../helper/token-user';
 
-export default function tokenRoute(router, database, key) {
+export default function tokenRoute(router, auth) {
   function validate(request, response, next) {
     next(tokenValidator.validate(request.data()));
   }
 
   function authorize(request, response, next) {
-    tokenUser(database, key, request.data(), request, next);
+    tokenUser(auth, request.data(), request, next);
   }
 
   function route(request, response, next) {
