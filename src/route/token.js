@@ -2,27 +2,24 @@ import { tokenValidator } from '@scola/auth-common';
 import { filter as extract } from '@scola/extract';
 import tokenUser from '../helper/token-user';
 
-export default function tokenRoute(router, auth) {
+export default function tokenRoute(server) {
   function validate(request, response, next) {
     next(tokenValidator.validate(request.data()));
   }
 
   function authorize(request, response, next) {
-    tokenUser(auth, request.data(), request, next);
+    tokenUser(server.auth(), request.data(), request, next);
   }
 
-  function route(request, response, next) {
+  function route(request, response) {
     response
-      .once('error', next)
       .status(201)
       .end({
         user: request.connection().user().toObject()
-      }, () => {
-        response.removeListener('error', next);
       });
   }
 
-  router.post(
+  server.router().post(
     '/scola.auth.token',
     extract,
     validate,

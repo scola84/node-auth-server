@@ -5,7 +5,7 @@ import { passwordValidator } from '@scola/auth-common';
 import { ScolaError } from '@scola/error';
 import { filter as extract } from '@scola/extract';
 
-export default function passwordRoute(router, auth) {
+export default function passwordRoute(server) {
   function validate(request, response, next) {
     passwordValidator.validate(request.data(), next);
   }
@@ -13,7 +13,7 @@ export default function passwordRoute(router, auth) {
   function authorize(request, response, next) {
     const data = request.data();
 
-    auth.dao().selectUser(data, (databaseError, user) => {
+    server.auth().dao().selectUser(data, (databaseError, user) => {
       if (databaseError) {
         next(ScolaError.fromError(databaseError, '500 invalid_query'));
         return;
@@ -31,7 +31,8 @@ export default function passwordRoute(router, auth) {
           return;
         }
 
-        request.connection().user(auth
+        request.connection().user(server
+          .auth()
           .user()
           .id(user.user_id)
           .username(user.username)
@@ -47,11 +48,11 @@ export default function passwordRoute(router, auth) {
     const header = request.header('user-agent');
     const agent = useragent.parse(header);
     const user = request.connection().user();
-    const duration = auth.dao().duration(user);
+    const duration = server.auth().dao().duration(user);
 
     sign({
       user_id: user.id()
-    }, auth.key(), {
+    }, server.auth().key(), {
       expiresIn: duration
     }, (tokenError, token) => {
       if (tokenError) {
@@ -69,27 +70,24 @@ export default function passwordRoute(router, auth) {
         device: agent.device.family
       };
 
-      auth.dao().insertToken(tokenRow, (databaseError) => {
+      server.auth().dao().insertToken(tokenRow, (databaseError) => {
         if (databaseError) {
           next(new ScolaError('500 invalid_query ' + databaseError.message));
           return;
         }
 
         response
-          .once('error', next)
           .status(201)
           .end({
             persistent: request.data().persistent,
             token,
             user: user.toObject()
-          }, () => {
-            response.removeListener('error', next);
           });
       });
     });
   }
 
-  router.post(
+  server.router().post(
     '/scola.auth.password',
     extract,
     validate,

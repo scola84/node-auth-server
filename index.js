@@ -10,9 +10,9 @@ export {
   User
 } from '@scola/auth-common';
 
-export function load(router, auth, i18n) {
-  loadAuth(i18n);
-  tokenFilter(router, auth);
-  passwordRoute(router, auth);
-  tokenRoute(router, auth);
+export function load(server) {
+  loadAuth(server);
+  tokenFilter(server);
+  passwordRoute(server);
+  tokenRoute(server);
 }
