@@ -2,7 +2,7 @@ import { verify } from 'jsonwebtoken';
 import useragent from 'useragent';
 import { ScolaError } from '@scola/error';
 
-export default function tokenUser(auth, data, request, callback) {
+export default function tokenUser(auth, data, request, callback = () => {}) {
   verify(data.token, auth.key(), (tokenError, token) => {
     if (tokenError) {
       callback(new ScolaError('401 invalid_token ' + tokenError.message));
