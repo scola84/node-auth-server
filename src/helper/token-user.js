@@ -9,7 +9,7 @@ export default function tokenUser(auth, data, request, callback = () => {}) {
       return;
     }
 
-    data.user_id = token.user_id;
+    data.id = token.id;
 
     auth.dao().selectToken(data, (databaseError, user) => {
       if (databaseError) {
@@ -37,11 +37,11 @@ export default function tokenUser(auth, data, request, callback = () => {}) {
         return;
       }
 
-      request.connection().user(auth
-        .user()
-        .id(user.user_id)
-        .username(user.username)
-        .roles(user.roles));
+      user = auth.user(user);
+
+      request
+        .connection()
+        .user(user);
 
       callback();
     });

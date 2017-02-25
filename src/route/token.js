@@ -4,7 +4,7 @@ import tokenUser from '../helper/token-user';
 
 export default function tokenRoute(server) {
   function validate(request, response, next) {
-    next(tokenValidator.validate(request.data()));
+    tokenValidator.validate(request.data(), next);
   }
 
   function authorize(request, response, next) {
@@ -14,9 +14,7 @@ export default function tokenRoute(server) {
   function route(request, response) {
     response
       .status(201)
-      .end({
-        user: request.connection().user().toObject()
-      });
+      .end();
   }
 
   server.router().post(

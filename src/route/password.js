@@ -21,22 +21,21 @@ export default function passwordRoute(server) {
 
       compare(data.password, user.password, (passwordError, result) => {
         if (passwordError) {
-          next(new ScolaError('401 invalid_password ' +
+          next(new ScolaError('401 invalid_credentials ' +
             passwordError.message));
           return;
         }
 
         if (result === false) {
-          next(new ScolaError('401 invalid_password'));
+          next(new ScolaError('401 invalid_credentials'));
           return;
         }
 
-        request.connection().user(server
-          .auth()
-          .user()
-          .id(user.user_id)
-          .username(user.username)
-          .roles(user.roles));
+        user = server.auth().user(user);
+
+        request
+          .connection()
+          .user(user);
 
         next();
       });
@@ -51,7 +50,7 @@ export default function passwordRoute(server) {
     const duration = server.auth().dao().duration(user);
 
     sign({
-      user_id: user.id()
+      id: user.id()
     }, server.auth().key(), {
       expiresIn: duration
     }, (tokenError, token) => {
@@ -60,10 +59,12 @@ export default function passwordRoute(server) {
         return;
       }
 
+      user.token(token);
+
       const tokenRow = {
-        user_id: user.id(),
+        id: user.id(),
         state: 1,
-        token,
+        token: user.token(),
         address: address.address,
         agent: agent.family,
         os: agent.os.family,
@@ -80,7 +81,6 @@ export default function passwordRoute(server) {
           .status(201)
           .end({
             persistent: request.data().persistent,
-            token,
             user: user.toObject()
           });
       });

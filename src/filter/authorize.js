@@ -13,7 +13,7 @@ export default function authorize(request, response, next) {
     .join('@');
 
   if (!user.may(request.method(), path)) {
-    next(new ScolaError('403 unauthorized'));
+    next(new ScolaError('403 invalid_auth'));
     return;
   }
 
