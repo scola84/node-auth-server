@@ -1,18 +1,24 @@
-import { load as loadAuth } from '@scola/auth-common';
+import {
+  Auth,
+  User,
+  load as loadAuth
+} from '@scola/auth-common';
+
+import authorize from './src/filter/authorize';
 import tokenFilter from './src/filter/token';
 import passwordRoute from './src/route/password';
 import tokenRoute from './src/route/token';
 
-export { default as authorize } from './src/filter/authorize';
-
-export {
-  Auth,
-  User
-} from '@scola/auth-common';
-
-export function load(server) {
+function load(server) {
   loadAuth(server);
   tokenFilter(server);
   passwordRoute(server);
   tokenRoute(server);
 }
+
+export {
+  Auth,
+  User,
+  authorize,
+  load
+};
