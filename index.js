@@ -4,7 +4,7 @@ import {
   load as loadAuth
 } from '@scola/auth-common';
 
-import authorize from './src/filter/authorize';
+import authFilter from './src/filter/auth';
 import tokenFilter from './src/filter/token';
 import passwordRoute from './src/route/password';
 import tokenRoute from './src/route/token';
@@ -19,6 +19,6 @@ function load(server) {
 export {
   Auth,
   User,
-  authorize,
+  authFilter,
   load
 };

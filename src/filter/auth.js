@@ -1,6 +1,6 @@
 import { ScolaError } from '@scola/error';
 
-export default function authorize(roles) {
+export default function authorizeFilter(authorize = () => true) {
   return (request, response, next) => {
     const user = request.connection().user();
 
@@ -9,7 +9,7 @@ export default function authorize(roles) {
       return;
     }
 
-    if (!user.is(roles)) {
+    if (!authorize(user, request)) {
       next(new ScolaError('403 invalid_auth'));
       return;
     }
