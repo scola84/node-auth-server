@@ -1,21 +1,19 @@
 import { ScolaError } from '@scola/error';
 
-export default function authorize(request, response, next) {
-  const user = request.connection().user();
+export default function authorize(roles) {
+  return (request, response, next) => {
+    const user = request.connection().user();
 
-  if (!user) {
-    next(new ScolaError('401 invalid_user'));
-    return;
-  }
+    if (!user) {
+      next(new ScolaError('401 invalid_user'));
+      return;
+    }
 
-  const path = [request.path(), request.version()]
-    .filter((v) => v)
-    .join('@');
+    if (!user.is(roles)) {
+      next(new ScolaError('403 invalid_auth'));
+      return;
+    }
 
-  if (!user.may(request.method(), path)) {
-    next(new ScolaError('403 invalid_auth'));
-    return;
-  }
-
-  next();
+    next();
+  };
 }
