@@ -1,4 +1,4 @@
-import tokenUser from '../helper/token-user';
+import verifyToken from '../helper/verify-token';
 
 export default function tokenFilter(server) {
   server.router().filter((request, response, next) => {
@@ -11,7 +11,7 @@ export default function tokenFilter(server) {
 
     const [, token] = header.split(' ');
 
-    tokenUser(server.database(), server.auth().key(), { token },
+    verifyToken(server.database(), server.auth().key(), { token },
       request, next);
   });
 }
