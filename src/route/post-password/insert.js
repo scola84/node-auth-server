@@ -33,7 +33,6 @@ export default function insert(server) {
         response
           .status(201)
           .end({
-            persistent: request.data().persistent,
             user: user.toObject()
           });
       });
