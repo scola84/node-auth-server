@@ -1,7 +1,7 @@
 import verifyToken from '../helper/verify-token';
 
-export default function tokenFilter(server) {
-  server.router().filter((request, response, next) => {
+export default function authenticate(server) {
+  return (request, response, next) => {
     const header = request.header('Authorization');
 
     if (!header) {
@@ -10,8 +10,6 @@ export default function tokenFilter(server) {
     }
 
     const [, token] = header.split(' ');
-
-    verifyToken(server.database(), server.auth().key(), { token },
-      request, next);
-  });
+    verifyToken(server.auth(), { token }, request, next);
+  };
 }

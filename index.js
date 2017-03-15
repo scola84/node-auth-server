@@ -4,21 +4,21 @@ import {
   load as loadAuth
 } from '@scola/auth-common';
 
-import authFilter from './src/filter/auth';
-import tokenFilter from './src/filter/token';
-import passwordRoute from './src/route/password';
-import tokenRoute from './src/route/token';
+import authenticate from './src/filter/authenticate';
+import authorize from './src/filter/authorize';
+import postPassword from './src/route/post-password';
+import postToken from './src/route/post-token';
 
 function load(server) {
   loadAuth(server);
-  tokenFilter(server);
-  passwordRoute(server);
-  tokenRoute(server);
+  postPassword(server);
+  postToken(server);
 }
 
 export {
   Auth,
   User,
-  authFilter,
+  authenticate,
+  authorize,
   load
 };
