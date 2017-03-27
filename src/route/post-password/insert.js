@@ -10,7 +10,7 @@ export default function insert(server) {
     const options = { expiresIn };
 
     sign(payload, server.auth().key(), options, (tokenError, token) => {
-      if (tokenError) {
+      if (tokenError instanceof Error === true) {
         next(new ScolaError('500 invalid_token ' + tokenError.message));
         return;
       }
@@ -25,7 +25,7 @@ export default function insert(server) {
       };
 
       server.auth().dao().insertToken(tokenRow, (databaseError) => {
-        if (databaseError) {
+        if (databaseError instanceof Error === true) {
           next(new ScolaError('500 invalid_query ' + databaseError.message));
           return;
         }

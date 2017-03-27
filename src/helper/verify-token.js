@@ -3,7 +3,7 @@ import { ScolaError } from '@scola/error';
 
 export default function verifyToken(auth, data, request, callback = () => {}) {
   verify(data.token, auth.key(), (tokenError, token) => {
-    if (tokenError) {
+    if (tokenError instanceof Error === true) {
       callback(new ScolaError('401 invalid_token ' + tokenError.message));
       return;
     }
@@ -11,7 +11,7 @@ export default function verifyToken(auth, data, request, callback = () => {}) {
     data.id = token.id;
 
     auth.dao().selectToken(data, (databaseError, user) => {
-      if (databaseError) {
+      if (databaseError instanceof Error === true) {
         callback(databaseError);
         return;
       }

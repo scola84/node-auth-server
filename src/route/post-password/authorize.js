@@ -6,13 +6,13 @@ export default function authorize(server) {
     const data = request.data();
 
     server.auth().dao().selectUser(data, (databaseError, user) => {
-      if (databaseError) {
+      if (databaseError instanceof Error === true) {
         next(databaseError);
         return;
       }
 
       compare(data.password, user.password, (passwordError, result) => {
-        if (passwordError) {
+        if (passwordError instanceof Error === true) {
           next(new ScolaError('401 invalid_credentials ' +
             passwordError.message));
           return;

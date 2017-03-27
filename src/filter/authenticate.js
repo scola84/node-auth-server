@@ -4,7 +4,7 @@ export default function authenticate(server) {
   return (request, response, next) => {
     const header = request.header('Authorization');
 
-    if (!header) {
+    if (header === null) {
       next();
       return;
     }
