@@ -2,10 +2,12 @@ import { compare } from 'bcrypt';
 import { ScolaError } from '@scola/error';
 
 export default function authorize(server) {
+  const dao = server.auth().dao();
+
   return (request, response, next) => {
     const data = request.data();
 
-    server.auth().dao().selectUser(data, (databaseError, user) => {
+    dao.selectUser(data, (databaseError, user) => {
       if (databaseError instanceof Error === true) {
         next(databaseError);
         return;

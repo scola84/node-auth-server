@@ -1,10 +1,13 @@
 import { verify } from 'jsonwebtoken';
 import { ScolaError } from '@scola/error';
 
-export default function verifyToken(auth, data, request, callback = () => {}) {
+export default function verifyToken(auth, data, request,
+  callback = () => {}) {
+
   verify(data.token, auth.key(), (tokenError, token) => {
     if (tokenError instanceof Error === true) {
-      callback(new ScolaError('401 invalid_token ' + tokenError.message));
+      callback(new ScolaError('401 invalid_token ' +
+        tokenError.message));
       return;
     }
 
@@ -16,12 +19,12 @@ export default function verifyToken(auth, data, request, callback = () => {}) {
         return;
       }
 
-      if (user.token_state > 1) {
+      if (user.token_state !== 1) {
         callback(new ScolaError('401 invalid_token Token state invalid'));
         return;
       }
 
-      if (user.user_state > 2) {
+      if (user.user_state !== 1) {
         callback(new ScolaError('401 invalid_token User state invalid'));
       }
 
