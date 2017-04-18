@@ -19,15 +19,6 @@ export default function verifyToken(auth, data, request,
         return;
       }
 
-      if (user.token_state !== 1) {
-        callback(new ScolaError('401 invalid_token Token state invalid'));
-        return;
-      }
-
-      if (user.user_state !== 1) {
-        callback(new ScolaError('401 invalid_token User state invalid'));
-      }
-
       user = auth.user(user);
 
       request

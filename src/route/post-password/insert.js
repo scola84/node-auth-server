@@ -20,14 +20,7 @@ export default function insert(server) {
 
       user.token(token);
 
-      const tokenRow = {
-        id: user.id(),
-        state: 1,
-        timestamp: Date.now(),
-        token: user.token()
-      };
-
-      dao.insertToken(tokenRow, (databaseError) => {
+      dao.insertToken(user, (databaseError) => {
         if (databaseError instanceof Error === true) {
           next(new ScolaError('500 invalid_query ' +
             databaseError.message));
