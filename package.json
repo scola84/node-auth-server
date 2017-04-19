@@ -8,10 +8,9 @@
   "main": "./index.js",
   "jsnext:main": "./index.js",
   "dependencies": {
-    "@scola/auth-common": "^3.1.0",
-    "@scola/error": "^4.3.0",
-    "bcrypt": "^1.0.1",
-    "jsonwebtoken": "^7.2.1",
-    "useragent": "^2.1.9"
+    "@scola/auth-common": "^4.0.0",
+    "@scola/error": "^5.0.0",
+    "bcrypt": "^1.0.2",
+    "jsonwebtoken": "^7.3.0"
   }
 }
