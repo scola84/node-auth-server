@@ -11,8 +11,14 @@ import postToken from './src/route/post-token';
 
 function load(server) {
   loadAuth(server);
-  postPassword(server);
-  postToken(server);
+
+  if (server.auth().password() === true) {
+    postPassword(server);
+  }
+
+  if (server.auth().token() === true) {
+    postToken(server);
+  }
 }
 
 export {
