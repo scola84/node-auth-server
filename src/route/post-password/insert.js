@@ -13,14 +13,14 @@ export default function insert(server) {
 
     sign(payload, key, options, (tokenError, token) => {
       if (tokenError instanceof Error === true) {
-        next(new ScolaError('500 invalid_token ' +
+        next(new ScolaError('500 invalid_sign ' +
           tokenError.message));
         return;
       }
 
       user.token(token);
 
-      dao.insertToken(user, (databaseError) => {
+      dao.insertLoginToken(user, (databaseError) => {
         if (databaseError instanceof Error === true) {
           next(new ScolaError('500 invalid_query ' +
             databaseError.message));

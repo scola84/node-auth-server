@@ -6,14 +6,14 @@ export default function verifyToken(auth, data, request,
 
   verify(data.token, auth.key(), (tokenError, token) => {
     if (tokenError instanceof Error === true) {
-      callback(new ScolaError('401 invalid_token ' +
+      callback(new ScolaError('401 invalid_login_token ' +
         tokenError.message));
       return;
     }
 
     data.id = token.id;
 
-    auth.dao().selectToken(data, (databaseError, user) => {
+    auth.dao().selectLoginToken(data, (databaseError, user) => {
       if (databaseError instanceof Error === true) {
         callback(databaseError);
         return;

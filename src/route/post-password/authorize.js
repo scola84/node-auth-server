@@ -7,7 +7,7 @@ export default function authorize(server) {
   return (request, response, next) => {
     const data = request.data();
 
-    dao.selectUser(data, (databaseError, user) => {
+    dao.selectLoginUser(data, (databaseError, user) => {
       if (databaseError instanceof Error === true) {
         next(databaseError);
         return;
