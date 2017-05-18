@@ -6,7 +6,7 @@ export default function verifyToken(auth, data, request,
 
   verify(data.token, auth.key(), (tokenError, token) => {
     if (tokenError instanceof Error === true) {
-      callback(new ScolaError('401 invalid_login_token ' +
+      callback(new ScolaError('401 invalid_token_login ' +
         tokenError.message));
       return;
     }
