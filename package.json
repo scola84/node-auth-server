@@ -1,6 +1,6 @@
 {
   "name": "@scola/auth-server",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Authorization (server)",
   "repository": "github:scola84/node-auth-server",
   "author": "M.C. van den Boogaart <scola@kvdb.name>",
