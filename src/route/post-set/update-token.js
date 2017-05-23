@@ -4,7 +4,7 @@ export default function updateToken(server) {
   return (request, response, next) => {
     const user = request.connection().user();
 
-    dao.updateResetToken(user, (error) => {
+    dao.updateResetToken(user, 'deleted', (error) => {
       if (error instanceof Error === true) {
         next(error);
         return;
