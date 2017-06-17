@@ -3,7 +3,6 @@ import { ScolaError } from '@scola/error';
 
 export default function insert(server) {
   const dao = server.auth().dao();
-  const key = server.auth().key();
 
   return (request, response, next) => {
     const user = request.connection().user();
@@ -11,7 +10,7 @@ export default function insert(server) {
     const payload = { id: user.id() };
     const options = { expiresIn: user.duration() };
 
-    sign(payload, key, options, (tokenError, token) => {
+    sign(payload, dao.key(), options, (tokenError, token) => {
       if (tokenError instanceof Error === true) {
         next(new ScolaError('500 invalid_sign ' +
           tokenError.message));
