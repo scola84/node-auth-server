@@ -2,15 +2,13 @@ import { sign } from 'jsonwebtoken';
 import { ScolaError } from '@scola/error';
 
 export default function insert(server) {
-  const dao = server.auth().dao();
-
   return (request, response, next) => {
     const user = request.connection().user();
-
     const payload = { id: user.id() };
+    const key = server.auth().dao().key();
     const options = { expiresIn: user.duration() };
 
-    sign(payload, dao.key(), options, (tokenError, token) => {
+    sign(payload, key, options, (tokenError, token) => {
       if (tokenError instanceof Error === true) {
         next(new ScolaError('500 invalid_sign ' +
           tokenError.message));
@@ -19,19 +17,23 @@ export default function insert(server) {
 
       user.token(token);
 
-      dao.insertLoginToken(user, (databaseError) => {
-        if (databaseError instanceof Error === true) {
-          next(new ScolaError('500 invalid_query ' +
-            databaseError.message));
-          return;
-        }
+      server
+        .auth()
+        .dao()
+        .login()
+        .insertToken(user, (databaseError) => {
+          if (databaseError instanceof Error === true) {
+            next(new ScolaError('500 invalid_query ' +
+              databaseError.message));
+            return;
+          }
 
-        response
-          .status(201)
-          .end({
-            user: user.toObject()
-          });
-      });
+          response
+            .status(201)
+            .end({
+              user: user.toObject()
+            });
+        });
     });
   };
 }

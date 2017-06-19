@@ -1,30 +1,30 @@
 export default function authorize(server) {
-  const dao = server.auth().dao();
-
   return (request, response, next) => {
-    const data = request.data();
+    server
+      .auth()
+      .dao()
+      .reset()
+      .selectUser(request.data(), (error, user) => {
+        if (error instanceof Error === true) {
+          server
+            .emit('error', error);
 
-    dao.selectResetUser(data, (error, user) => {
-      if (error instanceof Error === true) {
-        server
-          .emit('error', error);
+          response
+            .status(201)
+            .end();
 
-        response
-          .status(201)
-          .end();
+          return;
+        }
 
-        return;
-      }
+        user = server
+          .auth()
+          .user(user);
 
-      user = server
-        .auth()
-        .user(user);
+        request
+          .connection()
+          .user(user);
 
-      request
-        .connection()
-        .user(user);
-
-      next();
-    });
+        next();
+      });
   };
 }

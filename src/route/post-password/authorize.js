@@ -2,39 +2,40 @@ import { compare } from 'bcrypt';
 import { ScolaError } from '@scola/error';
 
 export default function authorize(server) {
-  const dao = server.auth().dao();
-
   return (request, response, next) => {
-    const data = request.data();
-
-    dao.selectLoginUser(data, (databaseError, user) => {
-      if (databaseError instanceof Error === true) {
-        next(databaseError);
-        return;
-      }
-
-      compare(data.password, user.password, (passwordError, result) => {
-        if (passwordError instanceof Error === true) {
-          next(new ScolaError('401 invalid_credentials ' +
-            passwordError.message));
+    server
+      .auth()
+      .dao()
+      .login()
+      .selectUser(request.data(), (databaseError, user) => {
+        if (databaseError instanceof Error === true) {
+          next(databaseError);
           return;
         }
 
-        if (result === false) {
-          next(new ScolaError('401 invalid_credentials'));
-          return;
-        }
+        compare(request.datum('password'), user.password,
+          (passwordError, result) => {
+            if (passwordError instanceof Error === true) {
+              next(new ScolaError('401 invalid_credentials ' +
+                passwordError.message));
+              return;
+            }
 
-        user = server
-          .auth()
-          .user(user);
+            if (result === false) {
+              next(new ScolaError('401 invalid_credentials'));
+              return;
+            }
 
-        request
-          .connection()
-          .user(user);
+            user = server
+              .auth()
+              .user(user);
 
-        next();
+            request
+              .connection()
+              .user(user);
+
+            next();
+          });
       });
-    });
   };
 }

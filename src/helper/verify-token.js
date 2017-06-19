@@ -13,19 +13,22 @@ export default function verifyToken(auth, data, request,
 
     data.id = token.id;
 
-    auth.dao().selectLoginToken(data, (databaseError, user) => {
-      if (databaseError instanceof Error === true) {
-        callback(databaseError);
-        return;
-      }
+    auth
+      .dao()
+      .login()
+      .selectToken(data, (databaseError, user) => {
+        if (databaseError instanceof Error === true) {
+          callback(databaseError);
+          return;
+        }
 
-      user = auth.user(user);
+        user = auth.user(user);
 
-      request
-        .connection()
-        .user(user);
+        request
+          .connection()
+          .user(user);
 
-      callback();
-    });
+        callback();
+      });
   });
 }

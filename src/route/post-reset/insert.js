@@ -1,22 +1,22 @@
 export default function insert(server) {
-  const dao = server.auth().dao();
-
   return (request, response, next) => {
-    const user = request.connection().user();
+    server
+      .auth()
+      .dao()
+      .reset()
+      .insertToken(request.connection().user(), (error) => {
+        if (error instanceof Error === true) {
+          server
+            .emit('error', error);
 
-    dao.insertResetToken(user, (error) => {
-      if (error instanceof Error === true) {
-        server
-          .emit('error', error);
+          response
+            .status(201)
+            .end();
 
-        response
-          .status(201)
-          .end();
+          return;
+        }
 
-        return;
-      }
-
-      next();
-    });
+        next();
+      });
   };
 }
