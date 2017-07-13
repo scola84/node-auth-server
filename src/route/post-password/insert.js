@@ -29,9 +29,7 @@ export default function insert(server) {
 
           response
             .status(201)
-            .end({
-              user: user.toObject()
-            });
+            .end(user.toObject());
         });
     });
   };
