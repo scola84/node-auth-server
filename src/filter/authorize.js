@@ -1,17 +1,15 @@
-import { ScolaError } from '@scola/error';
-
-export default function authorize(verify = (u, r, c) => c(true)) {
+export default function authorize(allow = (u, r, c) => c(true)) {
   return (request, response, next) => {
     const user = request.connection().user();
 
     if (user === null) {
-      next(new ScolaError('401 invalid_user'));
+      next(request.error('401 invalid_user'));
       return;
     }
 
-    verify(user, request, (result) => {
+    allow(user, request, (result) => {
       if (result === false) {
-        next(new ScolaError('403 invalid_auth'));
+        next(request.error('403 invalid_auth'));
         return;
       }
 

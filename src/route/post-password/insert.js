@@ -1,5 +1,4 @@
 import { sign } from 'jsonwebtoken';
-import { ScolaError } from '@scola/error';
 
 export default function insert(server) {
   return (request, response, next) => {
@@ -10,7 +9,7 @@ export default function insert(server) {
 
     sign(payload, key, options, (tokenError, token) => {
       if (tokenError instanceof Error === true) {
-        next(new ScolaError('500 invalid_sign ' +
+        next(request.error('500 invalid_sign ' +
           tokenError.message));
         return;
       }
@@ -23,7 +22,7 @@ export default function insert(server) {
         .login()
         .insertToken(user, (databaseError) => {
           if (databaseError instanceof Error === true) {
-            next(new ScolaError('500 invalid_query ' +
+            next(request.error('500 invalid_query ' +
               databaseError.message));
             return;
           }
