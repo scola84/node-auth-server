@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 
 export default function insert(server) {
-  return (request, response, next) => {
+  return (request, callback) => {
     const user = request.connection().user();
     const payload = { id: user.id() };
     const key = server.auth().dao().key();
@@ -9,7 +9,7 @@ export default function insert(server) {
 
     sign(payload, key, options, (tokenError, token) => {
       if (tokenError instanceof Error === true) {
-        next(request.error('500 invalid_sign ' +
+        callback(request.error('500 invalid_sign ' +
           tokenError.message));
         return;
       }
@@ -21,15 +21,8 @@ export default function insert(server) {
         .dao()
         .login()
         .insertToken(user, (databaseError) => {
-          if (databaseError instanceof Error === true) {
-            next(request.error('500 invalid_query ' +
-              databaseError.message));
-            return;
-          }
-
-          response
-            .status(201)
-            .end(user.toObject());
+          callback(databaseError,
+            databaseError || user.toObject());
         });
     });
   };
